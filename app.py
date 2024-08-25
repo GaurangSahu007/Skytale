@@ -2,77 +2,47 @@
  "cells": [
   {
    "cell_type": "code",
-   "execution_count": 1,
-   "id": "463256bc",
+   "execution_count": 5,
+   "id": "ebc19e70",
    "metadata": {
     "scrolled": true
    },
-   "outputs": [
-    {
-     "name": "stdout",
-     "output_type": "stream",
-     "text": [
-      "Requirement already satisfied: streamlit in c:\\users\\sahug\\anaconda3\\lib\\site-packages (1.37.1)\n",
-      "Requirement already satisfied: pandas in c:\\users\\sahug\\anaconda3\\lib\\site-packages (2.0.3)\n",
-      "Requirement already satisfied: openpyxl in c:\\users\\sahug\\anaconda3\\lib\\site-packages (3.0.10)\n",
-      "Requirement already satisfied: altair<6,>=4.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (5.4.0)\n",
-      "Requirement already satisfied: blinker<2,>=1.0.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (1.8.2)\n",
-      "Requirement already satisfied: cachetools<6,>=4.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (5.5.0)\n",
-      "Requirement already satisfied: click<9,>=7.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (8.0.4)\n",
-      "Requirement already satisfied: numpy<3,>=1.20 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (1.24.3)\n",
-      "Requirement already satisfied: packaging<25,>=20 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (23.1)\n",
-      "Requirement already satisfied: pillow<11,>=7.1.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (10.2.0)\n",
-      "Requirement already satisfied: protobuf<6,>=3.20 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (5.27.3)\n",
-      "Requirement already satisfied: pyarrow>=7.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (11.0.0)\n",
-      "Requirement already satisfied: requests<3,>=2.27 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (2.31.0)\n",
-      "Requirement already satisfied: rich<14,>=10.14.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (13.7.1)\n",
-      "Requirement already satisfied: tenacity<9,>=8.1.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (8.2.2)\n",
-      "Requirement already satisfied: toml<2,>=0.10.1 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (0.10.2)\n",
-      "Requirement already satisfied: typing-extensions<5,>=4.3.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (4.12.2)\n",
-      "Requirement already satisfied: gitpython!=3.1.19,<4,>=3.0.7 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (3.1.43)\n",
-      "Requirement already satisfied: pydeck<1,>=0.8.0b4 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (0.9.1)\n",
-      "Requirement already satisfied: tornado<7,>=6.0.3 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (6.3.2)\n",
-      "Requirement already satisfied: watchdog<5,>=2.1.5 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from streamlit) (2.1.6)\n",
-      "Requirement already satisfied: python-dateutil>=2.8.2 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from pandas) (2.8.2)\n",
-      "Requirement already satisfied: pytz>=2020.1 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from pandas) (2023.3.post1)\n",
-      "Requirement already satisfied: tzdata>=2022.1 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from pandas) (2023.3)\n",
-      "Requirement already satisfied: et_xmlfile in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from openpyxl) (1.1.0)\n",
-      "Requirement already satisfied: jinja2 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from altair<6,>=4.0->streamlit) (3.1.2)\n",
-      "Requirement already satisfied: jsonschema>=3.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from altair<6,>=4.0->streamlit) (4.17.3)\n",
-      "Requirement already satisfied: narwhals>=1.1.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from altair<6,>=4.0->streamlit) (1.5.5)\n",
-      "Requirement already satisfied: colorama in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from click<9,>=7.0->streamlit) (0.4.6)\n",
-      "Requirement already satisfied: gitdb<5,>=4.0.1 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from gitpython!=3.1.19,<4,>=3.0.7->streamlit) (4.0.11)\n",
-      "Requirement already satisfied: six>=1.5 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from python-dateutil>=2.8.2->pandas) (1.16.0)\n",
-      "Requirement already satisfied: charset-normalizer<4,>=2 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (2.0.4)\n",
-      "Requirement already satisfied: idna<4,>=2.5 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (3.4)\n",
-      "Requirement already satisfied: urllib3<3,>=1.21.1 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (1.26.16)\n",
-      "Requirement already satisfied: certifi>=2017.4.17 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from requests<3,>=2.27->streamlit) (2024.2.2)\n",
-      "Requirement already satisfied: markdown-it-py>=2.2.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from rich<14,>=10.14.0->streamlit) (2.2.0)\n",
-      "Requirement already satisfied: pygments<3.0.0,>=2.13.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from rich<14,>=10.14.0->streamlit) (2.15.1)\n",
-      "Requirement already satisfied: smmap<6,>=3.0.1 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from gitdb<5,>=4.0.1->gitpython!=3.1.19,<4,>=3.0.7->streamlit) (5.0.1)\n",
-      "Requirement already satisfied: MarkupSafe>=2.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from jinja2->altair<6,>=4.0->streamlit) (2.1.1)\n",
-      "Requirement already satisfied: attrs>=17.4.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (22.1.0)\n",
-      "Requirement already satisfied: pyrsistent!=0.17.0,!=0.17.1,!=0.17.2,>=0.14.0 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from jsonschema>=3.0->altair<6,>=4.0->streamlit) (0.18.0)\n",
-      "Requirement already satisfied: mdurl~=0.1 in c:\\users\\sahug\\anaconda3\\lib\\site-packages (from markdown-it-py>=2.2.0->rich<14,>=10.14.0->streamlit) (0.1.0)\n"
-     ]
-    }
-   ],
+   "outputs": [],
    "source": [
-    "!pip install streamlit pandas openpyxl"
+    "#!pip install streamlit pandas openpyxl"
    ]
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
-   "id": "089073d5",
+   "execution_count": 6,
+   "id": "4db19b9e",
    "metadata": {},
    "outputs": [
     {
      "name": "stderr",
      "output_type": "stream",
      "text": [
-      "2024-08-25 10:40:50.295 No runtime found, using MemoryCacheStorageManager\n",
-      "2024-08-25 10:40:56.670 Session state does not function when running a script without `streamlit run`\n"
+      "2024-08-25 11:01:39.012 No runtime found, using MemoryCacheStorageManager\n"
+     ]
+    },
+    {
+     "ename": "FileNotFoundError",
+     "evalue": "[Errno 2] No such file or directory: '/Application_Ranking_Combined.xlsx'",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[1;31mFileNotFoundError\u001b[0m                         Traceback (most recent call last)",
+      "Cell \u001b[1;32mIn[6], line 17\u001b[0m\n\u001b[0;32m     14\u001b[0m     df_d3 \u001b[38;5;241m=\u001b[39m pd\u001b[38;5;241m.\u001b[39mread_excel(d3_path, sheet_name\u001b[38;5;241m=\u001b[39m\u001b[38;5;28;01mNone\u001b[39;00m)  \u001b[38;5;66;03m# Load all sheets as dict\u001b[39;00m\n\u001b[0;32m     15\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m df_d1, df_d2, df_d3\n\u001b[1;32m---> 17\u001b[0m df_d1, df_d2, df_d3 \u001b[38;5;241m=\u001b[39m load_data()\n\u001b[0;32m     19\u001b[0m \u001b[38;5;66;03m# Sidebar Controls\u001b[39;00m\n\u001b[0;32m     20\u001b[0m st\u001b[38;5;241m.\u001b[39msidebar\u001b[38;5;241m.\u001b[39mtitle(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mApplication Ranking Viewer\u001b[39m\u001b[38;5;124m\"\u001b[39m)\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\streamlit\\runtime\\caching\\cache_utils.py:168\u001b[0m, in \u001b[0;36mmake_cached_func_wrapper.<locals>.wrapper\u001b[1;34m(*args, **kwargs)\u001b[0m\n\u001b[0;32m    166\u001b[0m \u001b[38;5;129m@functools\u001b[39m\u001b[38;5;241m.\u001b[39mwraps(info\u001b[38;5;241m.\u001b[39mfunc)\n\u001b[0;32m    167\u001b[0m \u001b[38;5;28;01mdef\u001b[39;00m \u001b[38;5;21mwrapper\u001b[39m(\u001b[38;5;241m*\u001b[39margs, \u001b[38;5;241m*\u001b[39m\u001b[38;5;241m*\u001b[39mkwargs):\n\u001b[1;32m--> 168\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m cached_func(\u001b[38;5;241m*\u001b[39margs, \u001b[38;5;241m*\u001b[39m\u001b[38;5;241m*\u001b[39mkwargs)\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\streamlit\\runtime\\caching\\cache_utils.py:197\u001b[0m, in \u001b[0;36mCachedFunc.__call__\u001b[1;34m(self, *args, **kwargs)\u001b[0m\n\u001b[0;32m    195\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_info\u001b[38;5;241m.\u001b[39mshow_spinner \u001b[38;5;129;01mor\u001b[39;00m \u001b[38;5;28misinstance\u001b[39m(\u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_info\u001b[38;5;241m.\u001b[39mshow_spinner, \u001b[38;5;28mstr\u001b[39m):\n\u001b[0;32m    196\u001b[0m     \u001b[38;5;28;01mwith\u001b[39;00m spinner(message, _cache\u001b[38;5;241m=\u001b[39m\u001b[38;5;28;01mTrue\u001b[39;00m):\n\u001b[1;32m--> 197\u001b[0m         \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_get_or_create_cached_value(args, kwargs)\n\u001b[0;32m    198\u001b[0m \u001b[38;5;28;01melse\u001b[39;00m:\n\u001b[0;32m    199\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_get_or_create_cached_value(args, kwargs)\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\streamlit\\runtime\\caching\\cache_utils.py:224\u001b[0m, in \u001b[0;36mCachedFunc._get_or_create_cached_value\u001b[1;34m(self, func_args, func_kwargs)\u001b[0m\n\u001b[0;32m    222\u001b[0m \u001b[38;5;28;01mexcept\u001b[39;00m CacheKeyNotFoundError:\n\u001b[0;32m    223\u001b[0m     \u001b[38;5;28;01mpass\u001b[39;00m\n\u001b[1;32m--> 224\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_handle_cache_miss(cache, value_key, func_args, func_kwargs)\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\streamlit\\runtime\\caching\\cache_utils.py:280\u001b[0m, in \u001b[0;36mCachedFunc._handle_cache_miss\u001b[1;34m(self, cache, value_key, func_args, func_kwargs)\u001b[0m\n\u001b[0;32m    276\u001b[0m \u001b[38;5;66;03m# We acquired the lock before any other thread. Compute the value!\u001b[39;00m\n\u001b[0;32m    277\u001b[0m \u001b[38;5;28;01mwith\u001b[39;00m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_info\u001b[38;5;241m.\u001b[39mcached_message_replay_ctx\u001b[38;5;241m.\u001b[39mcalling_cached_function(\n\u001b[0;32m    278\u001b[0m     \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_info\u001b[38;5;241m.\u001b[39mfunc, \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_info\u001b[38;5;241m.\u001b[39mallow_widgets\n\u001b[0;32m    279\u001b[0m ):\n\u001b[1;32m--> 280\u001b[0m     computed_value \u001b[38;5;241m=\u001b[39m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_info\u001b[38;5;241m.\u001b[39mfunc(\u001b[38;5;241m*\u001b[39mfunc_args, \u001b[38;5;241m*\u001b[39m\u001b[38;5;241m*\u001b[39mfunc_kwargs)\n\u001b[0;32m    282\u001b[0m \u001b[38;5;66;03m# We've computed our value, and now we need to write it back to the cache\u001b[39;00m\n\u001b[0;32m    283\u001b[0m \u001b[38;5;66;03m# along with any \"replay messages\" that were generated during value computation.\u001b[39;00m\n\u001b[0;32m    284\u001b[0m messages \u001b[38;5;241m=\u001b[39m \u001b[38;5;28mself\u001b[39m\u001b[38;5;241m.\u001b[39m_info\u001b[38;5;241m.\u001b[39mcached_message_replay_ctx\u001b[38;5;241m.\u001b[39m_most_recent_messages\n",
+      "Cell \u001b[1;32mIn[6], line 12\u001b[0m, in \u001b[0;36mload_data\u001b[1;34m()\u001b[0m\n\u001b[0;32m     10\u001b[0m \u001b[38;5;129m@st\u001b[39m\u001b[38;5;241m.\u001b[39mcache_data\n\u001b[0;32m     11\u001b[0m \u001b[38;5;28;01mdef\u001b[39;00m \u001b[38;5;21mload_data\u001b[39m():\n\u001b[1;32m---> 12\u001b[0m     df_d1 \u001b[38;5;241m=\u001b[39m pd\u001b[38;5;241m.\u001b[39mread_excel(d1_path)\n\u001b[0;32m     13\u001b[0m     df_d2 \u001b[38;5;241m=\u001b[39m pd\u001b[38;5;241m.\u001b[39mread_excel(d2_path, sheet_name\u001b[38;5;241m=\u001b[39m\u001b[38;5;28;01mNone\u001b[39;00m)  \u001b[38;5;66;03m# Load all sheets as dict\u001b[39;00m\n\u001b[0;32m     14\u001b[0m     df_d3 \u001b[38;5;241m=\u001b[39m pd\u001b[38;5;241m.\u001b[39mread_excel(d3_path, sheet_name\u001b[38;5;241m=\u001b[39m\u001b[38;5;28;01mNone\u001b[39;00m)  \u001b[38;5;66;03m# Load all sheets as dict\u001b[39;00m\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\pandas\\io\\excel\\_base.py:478\u001b[0m, in \u001b[0;36mread_excel\u001b[1;34m(io, sheet_name, header, names, index_col, usecols, dtype, engine, converters, true_values, false_values, skiprows, nrows, na_values, keep_default_na, na_filter, verbose, parse_dates, date_parser, date_format, thousands, decimal, comment, skipfooter, storage_options, dtype_backend)\u001b[0m\n\u001b[0;32m    476\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;129;01mnot\u001b[39;00m \u001b[38;5;28misinstance\u001b[39m(io, ExcelFile):\n\u001b[0;32m    477\u001b[0m     should_close \u001b[38;5;241m=\u001b[39m \u001b[38;5;28;01mTrue\u001b[39;00m\n\u001b[1;32m--> 478\u001b[0m     io \u001b[38;5;241m=\u001b[39m ExcelFile(io, storage_options\u001b[38;5;241m=\u001b[39mstorage_options, engine\u001b[38;5;241m=\u001b[39mengine)\n\u001b[0;32m    479\u001b[0m \u001b[38;5;28;01melif\u001b[39;00m engine \u001b[38;5;129;01mand\u001b[39;00m engine \u001b[38;5;241m!=\u001b[39m io\u001b[38;5;241m.\u001b[39mengine:\n\u001b[0;32m    480\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\n\u001b[0;32m    481\u001b[0m         \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mEngine should not be specified when passing \u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m    482\u001b[0m         \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124man ExcelFile - ExcelFile already has the engine set\u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m    483\u001b[0m     )\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\pandas\\io\\excel\\_base.py:1496\u001b[0m, in \u001b[0;36mExcelFile.__init__\u001b[1;34m(self, path_or_buffer, engine, storage_options)\u001b[0m\n\u001b[0;32m   1494\u001b[0m     ext \u001b[38;5;241m=\u001b[39m \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mxls\u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m   1495\u001b[0m \u001b[38;5;28;01melse\u001b[39;00m:\n\u001b[1;32m-> 1496\u001b[0m     ext \u001b[38;5;241m=\u001b[39m inspect_excel_format(\n\u001b[0;32m   1497\u001b[0m         content_or_path\u001b[38;5;241m=\u001b[39mpath_or_buffer, storage_options\u001b[38;5;241m=\u001b[39mstorage_options\n\u001b[0;32m   1498\u001b[0m     )\n\u001b[0;32m   1499\u001b[0m     \u001b[38;5;28;01mif\u001b[39;00m ext \u001b[38;5;129;01mis\u001b[39;00m \u001b[38;5;28;01mNone\u001b[39;00m:\n\u001b[0;32m   1500\u001b[0m         \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\n\u001b[0;32m   1501\u001b[0m             \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mExcel file format cannot be determined, you must specify \u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m   1502\u001b[0m             \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124man engine manually.\u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[0;32m   1503\u001b[0m         )\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\pandas\\io\\excel\\_base.py:1371\u001b[0m, in \u001b[0;36minspect_excel_format\u001b[1;34m(content_or_path, storage_options)\u001b[0m\n\u001b[0;32m   1368\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28misinstance\u001b[39m(content_or_path, \u001b[38;5;28mbytes\u001b[39m):\n\u001b[0;32m   1369\u001b[0m     content_or_path \u001b[38;5;241m=\u001b[39m BytesIO(content_or_path)\n\u001b[1;32m-> 1371\u001b[0m \u001b[38;5;28;01mwith\u001b[39;00m get_handle(\n\u001b[0;32m   1372\u001b[0m     content_or_path, \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mrb\u001b[39m\u001b[38;5;124m\"\u001b[39m, storage_options\u001b[38;5;241m=\u001b[39mstorage_options, is_text\u001b[38;5;241m=\u001b[39m\u001b[38;5;28;01mFalse\u001b[39;00m\n\u001b[0;32m   1373\u001b[0m ) \u001b[38;5;28;01mas\u001b[39;00m handle:\n\u001b[0;32m   1374\u001b[0m     stream \u001b[38;5;241m=\u001b[39m handle\u001b[38;5;241m.\u001b[39mhandle\n\u001b[0;32m   1375\u001b[0m     stream\u001b[38;5;241m.\u001b[39mseek(\u001b[38;5;241m0\u001b[39m)\n",
+      "File \u001b[1;32m~\\anaconda3\\Lib\\site-packages\\pandas\\io\\common.py:868\u001b[0m, in \u001b[0;36mget_handle\u001b[1;34m(path_or_buf, mode, encoding, compression, memory_map, is_text, errors, storage_options)\u001b[0m\n\u001b[0;32m    859\u001b[0m         handle \u001b[38;5;241m=\u001b[39m \u001b[38;5;28mopen\u001b[39m(\n\u001b[0;32m    860\u001b[0m             handle,\n\u001b[0;32m    861\u001b[0m             ioargs\u001b[38;5;241m.\u001b[39mmode,\n\u001b[1;32m   (...)\u001b[0m\n\u001b[0;32m    864\u001b[0m             newline\u001b[38;5;241m=\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124m\"\u001b[39m,\n\u001b[0;32m    865\u001b[0m         )\n\u001b[0;32m    866\u001b[0m     \u001b[38;5;28;01melse\u001b[39;00m:\n\u001b[0;32m    867\u001b[0m         \u001b[38;5;66;03m# Binary mode\u001b[39;00m\n\u001b[1;32m--> 868\u001b[0m         handle \u001b[38;5;241m=\u001b[39m \u001b[38;5;28mopen\u001b[39m(handle, ioargs\u001b[38;5;241m.\u001b[39mmode)\n\u001b[0;32m    869\u001b[0m     handles\u001b[38;5;241m.\u001b[39mappend(handle)\n\u001b[0;32m    871\u001b[0m \u001b[38;5;66;03m# Convert BytesIO or file objects passed with an encoding\u001b[39;00m\n",
+      "\u001b[1;31mFileNotFoundError\u001b[0m: [Errno 2] No such file or directory: '/Application_Ranking_Combined.xlsx'"
      ]
     }
    ],
@@ -81,9 +51,9 @@
     "import pandas as pd\n",
     "\n",
     "# Load datasets\n",
-    "d1_path = 'Application_Ranking_Combined.xlsx'\n",
-    "d2_path = 'Application_Ranking_by_Category.xlsx'\n",
-    "d3_path = 'Application_Ranking_by_Genre.xlsx'\n",
+    "d1_path = '/Application_Ranking_Combined.xlsx'\n",
+    "d2_path = '/Application_Ranking_by_Category.xlsx'\n",
+    "d3_path = '/Application_Ranking_by_Genre.xlsx'\n",
     "\n",
     "# Load the data\n",
     "@st.cache_data\n",
@@ -154,13 +124,30 @@
   },
   {
    "cell_type": "code",
+   "execution_count": 4,
+   "id": "9d1b1e20",
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "SyntaxError",
+     "evalue": "invalid syntax (3737097518.py, line 1)",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[1;36m  Cell \u001b[1;32mIn[4], line 1\u001b[1;36m\u001b[0m\n\u001b[1;33m    streamlit run app.py\u001b[0m\n\u001b[1;37m              ^\u001b[0m\n\u001b[1;31mSyntaxError\u001b[0m\u001b[1;31m:\u001b[0m invalid syntax\n"
+     ]
+    }
+   ],
+   "source": [
+    "streamlit run app.py"
+   ]
+  },
+  {
+   "cell_type": "code",
    "execution_count": null,
-   "id": "155afab3",
+   "id": "1768125f",
    "metadata": {},
    "outputs": [],
-   "source": [
-    "stre"
-   ]
+   "source": []
   }
  ],
  "metadata": {
