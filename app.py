@@ -114,20 +114,27 @@ elif data_source == "By Category" and category_selected:
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
-    
+
     if sub_genre_selected and "All" not in sub_genre_selected:
         df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
-    
+        total_applications = df_genre.shape[0]
+        selected_sub_genres = ', '.join(sub_genre_selected)
+        st.subheader(f"Total Applications in Selected Sub Genre(s): {total_applications}")
+    else:
+        selected_sub_genres = "All Sub Genres"
+        total_applications = df_genre.shape[0]
+
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    selected_sub_genres = ', '.join(sub_genre_selected) if sub_genre_selected and "All" not in sub_genre_selected else "All Sub Genres"
-    
-    st.subheader(f"Total Applications in Selected Sub Genre(s): {df_genre.shape[0]}")
-    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected} (Sub Genre: {selected_sub_genres})")
+    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
+    if "All" not in sub_genre_selected:
+        st.subheader(f"(Sub Genre: {selected_sub_genres})")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected} (Sub Genre: {selected_sub_genres})")
+    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
+    if "All" not in sub_genre_selected:
+        st.subheader(f"(Sub Genre: {selected_sub_genres})")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
 
