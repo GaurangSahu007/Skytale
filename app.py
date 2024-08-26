@@ -18,6 +18,12 @@ def load_data():
     df_d1 = pd.read_excel(d1_path)
     df_d2 = pd.read_excel(d2_path, sheet_name=None)  # Load all sheets as dict
     df_d3 = pd.read_excel(d3_path, sheet_name=None)  # Load all sheets as dict
+    
+    # Ensure 'Sub Genre' NaN values are treated as blank
+    for genre in df_d3:
+        if 'Sub Genre' in df_d3[genre].columns:
+            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
+    
     return df_d1, df_d2, df_d3
 
 df_d1, df_d2, df_d3 = load_data()
@@ -43,18 +49,13 @@ if data_source == "By Category":
     category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
 elif data_source == "By Genre":
     genre_selected = st.sidebar.selectbox("Select Genre:", list(df_d3.keys()))
-
-    # If a genre is selected, determine available Sub-Genres
     if genre_selected:
-        df_genre = df_d3[genre_selected]
-        available_sub_genres = df_genre['Sub Genre'].dropna().unique()
-        if len(available_sub_genres) > 0:
-            sub_genre_selected = st.sidebar.selectbox("Select Sub Genre (optional):", available_sub_genres)
-        else:
-            st.sidebar.write("No Sub Genres available for this Genre.")
+        sub_genres = df_d3[genre_selected]['Sub Genre'].unique()
+        sub_genres = [sg for sg in sub_genres if sg]  # Remove empty strings
+        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=["All"] + list(sub_genres), default="All")
 
 # Main Display
-st.title("Interactive Application Ranking Viewer")
+st.title("Application Ranking Viewer")
 
 # Function to extract top and bottom N applications
 def extract_top_bottom(df, top_n, bottom_n):
@@ -111,16 +112,15 @@ elif data_source == "By Category" and category_selected:
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
-
-    # Filter by Sub Genre if selected
-    if sub_genre_selected:
-        df_genre = df_genre[df_genre['Sub Genre'] == sub_genre_selected]
-        st.subheader(f"Total Sub Genre: {sub_genre_selected}")
-
+    
+    if sub_genre_selected and "All" not in sub_genre_selected:
+        df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
+    
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    st.subheader(f"Total Applications: {df_genre.shape[0]}")
+    
+    st.subheader(f"Total Sub Genres: {len(sub_genres)}")
     st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
     st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
