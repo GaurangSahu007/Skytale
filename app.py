@@ -29,6 +29,8 @@ def load_data():
 df_d1, df_d2, df_d3 = load_data()
 
 # Sidebar Controls
+st.sidebar.image("SCMHRD.png", use_column_width=True)  # Adjust the image path
+
 st.sidebar.title("Filter")
 
 # Global Search Option
@@ -120,10 +122,12 @@ elif data_source == "By Genre" and genre_selected:
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    st.subheader(f"Total Sub Genres: {len(sub_genres)}")
-    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
+    selected_sub_genres = ', '.join(sub_genre_selected) if sub_genre_selected and "All" not in sub_genre_selected else "All Sub Genres"
+    
+    st.subheader(f"Total Applications in Selected Sub Genre(s): {df_genre.shape[0]}")
+    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected} (Sub Genre: {selected_sub_genres})")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
+    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected} (Sub Genre: {selected_sub_genres})")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
 
