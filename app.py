@@ -57,7 +57,7 @@ def extract_top_bottom(df, top_n, bottom_n):
     return top_apps, bottom_apps
 
 # Columns to Display
-columns_to_display = ['FinalRank', 'Application', 'Genre', 'Sub Genre', 'FinalScore', 'ScoreDifference', 'Downloads', 'Reviews', 'Ratings', 'Purchase Price']
+columns_to_display = ['FinalRank', 'Application', 'Genre', 'Sub Genre', 'FinalScore', 'ScoreDifference', 'Downloads', 'Reviews', 'Ratings', 'Purchase_Price']
 
 # Ensure columns have compatible types
 def ensure_compatible_types(df):
@@ -90,7 +90,7 @@ if data_source == "Overall Data":
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
-        columns_to_display.append('Purchase Price')
+        columns_to_display.append('Purchase_Price')
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
