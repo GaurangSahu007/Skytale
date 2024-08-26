@@ -70,7 +70,7 @@ def extract_top_bottom(df, top_n, bottom_n):
     return top_apps, bottom_apps
 
 # Columns to Display
-columns_to_display = ['FinalRank', 'Application', 'Genre', 'Sub Genre', 'FinalScore', 'ScoreDifference', 'Downloads', 'Reviews', 'Ratings', 'Purchase_Price']
+columns_to_display = ['FinalRank', 'Application', 'Genre', 'Sub Genre', 'FinalScore', 'ScoreDifference', 'Downloads', 'Reviews', 'Ratings']
 
 # Ensure columns have compatible types
 def ensure_compatible_types(df):
@@ -114,7 +114,7 @@ elif data_source == "By Category" and category_selected:
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
-
+    
     if sub_genre_selected and "All" not in sub_genre_selected:
         df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
         total_applications = df_genre.shape[0]
