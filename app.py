@@ -57,18 +57,12 @@ def extract_top_bottom(df, top_n, bottom_n):
     return top_apps, bottom_apps
 
 # Columns to Display
-columns_to_display = ['FinalRank', 'Application', 'FinalScore', 'ScoreDifference', 'Downloads', 'Reviews', 'Ratings']
+columns_to_display = ['FinalRank', 'Application', 'Genre', 'Sub Genre', 'FinalScore', 'ScoreDifference', 'Downloads', 'Reviews', 'Ratings']
 
-# Apply Search Filter Globally
-if search_query:
-    df_d1 = df_d1[df_d1['Application'].str.contains(search_query, case=False, na=False)]
-    for category in df_d2:
-        df_d2[category] = df_d2[category][df_d2[category]['Application'].str.contains(search_query, case=False, na=False)]
-    for genre in df_d3:
-        df_d3[genre] = df_d3[genre][df_d3[genre]['Application'].str.contains(search_query, case=False, na=False)]
-
-# Display Data
+# Display Data based on selected filter
 if data_source == "Overall Data":
+    if 'Genre' in df_d1.columns and 'Sub Genre' in df_d1.columns:
+        columns_to_display.extend(['Genre', 'Sub Genre'])
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     st.subheader(f"Total Applications: {df_d1.shape[0]}")
     st.subheader(f"Top {n_value} Applications from Overall Data")
@@ -77,6 +71,8 @@ if data_source == "Overall Data":
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
+    if category_selected.lower() == "paid":
+        columns_to_display.append('Purchase Price')
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
     st.subheader(f"Total Applications: {df_category.shape[0]}")
     st.subheader(f"Top {n_value} {category_selected} Applications")
@@ -85,10 +81,18 @@ elif data_source == "By Category" and category_selected:
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
+    columns_to_display.extend(['Genre', 'Sub Genre'])  # Ensure Genre and Sub Genre are displayed
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     st.subheader(f"Total Applications: {df_genre.shape[0]}")
     st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
     st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
+
+
+
+# In[ ]:
+
+
+
 
