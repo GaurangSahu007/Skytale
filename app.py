@@ -37,11 +37,21 @@ data_source = st.sidebar.radio("Select Data Source:", ("Overall Data", "By Categ
 # Filter by Category or Genre if D2 or D3 is selected
 category_selected = None
 genre_selected = None
+sub_genre_selected = None
 
 if data_source == "By Category":
     category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
 elif data_source == "By Genre":
     genre_selected = st.sidebar.selectbox("Select Genre:", list(df_d3.keys()))
+
+    # If a genre is selected, determine available Sub-Genres
+    if genre_selected:
+        df_genre = df_d3[genre_selected]
+        available_sub_genres = df_genre['Sub Genre'].dropna().unique()
+        if len(available_sub_genres) > 0:
+            sub_genre_selected = st.sidebar.selectbox("Select Sub Genre (optional):", available_sub_genres)
+        else:
+            st.sidebar.write("No Sub Genres available for this Genre.")
 
 # Main Display
 st.title("Interactive Application Ranking Viewer")
@@ -101,6 +111,12 @@ elif data_source == "By Category" and category_selected:
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
+
+    # Filter by Sub Genre if selected
+    if sub_genre_selected:
+        df_genre = df_genre[df_genre['Sub Genre'] == sub_genre_selected]
+        st.subheader(f"Total Sub Genre: {sub_genre_selected}")
+
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
