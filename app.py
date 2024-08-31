@@ -23,7 +23,7 @@ def get_base64_of_bin_file(bin_file):
 # Encode the background image
 bg_image_base64 = get_base64_of_bin_file(bg_image_path)
 
-# Global Header with Background Image CSS
+# Global Header with Background Image CSS and 70% Transparency
 st.markdown(
     f"""
     <style>
@@ -41,6 +41,21 @@ st.markdown(
         background-position: center;
         background-repeat: no-repeat;
         padding: 20px;
+        position: relative; /* For overlay */
+    }}
+    .main::before {{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(255, 255, 255, 0.7); /* Adjust transparency */
+        z-index: 1;
+    }}
+    .main-content {{
+        position: relative;
+        z-index: 2; /* Content above the overlay */
     }}
     </style>
     <div class="main">
@@ -101,22 +116,23 @@ data_source = st.sidebar.radio("Select Data Source:", ("Overall Data", "By Categ
 
 # Filter by Category or Genre if D2 or D3 is selected
 category_selected = None
-genre_selected = None
+genre_selected = "Communication"  # Set default genre to "Communication"
 sub_genre_selected = None
 
 if data_source == "By Category":
     category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
 elif data_source == "By Genre":
-    genre_selected = st.sidebar.selectbox("Select Genre:", list(df_d3.keys()))
+    genre_selected = st.sidebar.selectbox("Select Genre:", list(df_d3.keys()), index=list(df_d3.keys()).index("Communication"))
     if genre_selected:
         sub_genres = df_d3[genre_selected]['Sub Genre'].unique()
         sub_genres = [sg for sg in sub_genres if sg]  # Remove empty strings
-        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=["All"] + list(sub_genres), default="All")
+        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=["All"] + list(sub_genres), default=None)  # Default to nothing
 
 # Sidebar Footer
 st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
 # Main Display
+st.markdown('<div class="main-content">', unsafe_allow_html=True)
 st.title("Application Ranking Viewer")
 
 # Function to extract top and bottom N applications
@@ -191,31 +207,7 @@ elif data_source == "By Genre" and genre_selected:
     st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
     if "All" not in sub_genre_selected:
         st.subheader(f"(Sub Genre: {selected_sub_genres})")
-    st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
-    if "All" not in sub_genre_selected:
-        st.subheader(f"(Sub Genre: {selected_sub_genres})")
-    st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
-
-# Global Footer
-st.markdown(
-    """
-    <style>
-    .footer {
-        font-size:16px;
-        text-align: center;
-        padding: 10px;
-        margin-top: 30px;
-        background-color: #f0f0f0;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
-
-# Close background div
-st.markdown('</div>', unsafe_allow_html=True)  # Fix the syntax error here
+    st.dataframe(top_apps[columns_to_display].reset_index
 
 
 # In[ ]:
