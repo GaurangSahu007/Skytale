@@ -87,17 +87,20 @@ sub_genre_selected = None
 if data_source == "By Category":
     category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
 elif data_source == "By Genre":
-    genre_selected = st.sidebar.selectbox("Select Genre:", list(df_d3.keys()))
+    # Sort genres by "Genre Final Score"
+    genre_df_sorted = df_d1.groupby('Genre')['FinalScore'].mean().reset_index().sort_values(by='FinalScore', ascending=False)
+    sorted_genres = genre_df_sorted['Genre'].tolist()
+    
+    # Default selection is "Communication" and sorted by Genre Final Score
+    genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=sorted_genres.index('Communication'))
+    
     if genre_selected:
-        sub_genres = df_d3[genre_selected]['Sub Genre'].unique()
-        sub_genres = [sg for sg in sub_genres if sg]  # Remove empty strings
-        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=["All"] + list(sub_genres), default="All")
+        # Exclude 'All' option from subgenre selection and list subgenres directly
+        sub_genres = df_d3[genre_selected]['Sub Genre'].dropna().unique()  # Remove any blanks
+        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
 
 # Sidebar Footer
 st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
-
-# Main Display
-st.title("Application Ranking Viewer")
 
 # Function to extract top and bottom N applications
 def extract_top_bottom(df, top_n, bottom_n):
@@ -155,26 +158,24 @@ elif data_source == "By Category" and category_selected:
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
     
-    if sub_genre_selected and "All" not in sub_genre_selected:
+    if sub_genre_selected:
         df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
-        total_applications = df_genre.shape[0]
-        selected_sub_genres = ', '.join(sub_genre_selected)
-        st.subheader(f"Total Applications in Selected Sub Genre(s): {total_applications}")
+        selected_sub_genres = ' | '.join(sub_genre_selected)
     else:
-        selected_sub_genres = "All Sub Genres"
-        total_applications = df_genre.shape[0]
+        selected_sub_genres = "No Subgenre"
+    
+    total_sub_genres = len(df_genre['Sub Genre'].unique())
+
+    st.markdown(f"### Number of Sub Genres: {total_sub_genres}")
+    st.markdown(f"**Sub Genres:** {selected_sub_genres}")
 
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
     st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
-    if "All" not in sub_genre_selected:
-        st.subheader(f"(Sub Genre: {selected_sub_genres})")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
     st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
-    if "All" not in sub_genre_selected:
-        st.subheader(f"(Sub Genre: {selected_sub_genres})")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
 # Global Footer
