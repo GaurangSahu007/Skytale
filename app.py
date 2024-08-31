@@ -28,14 +28,6 @@ st.markdown(
     .underline {
         text-decoration: underline;
     }
-    .green-header th {
-        background-color: #89C55F;
-        color: white;
-    }
-    .red-header th {
-        background-color: #FF4C4C;
-        color: white;
-    }
     </style>
     """,
     unsafe_allow_html=True
@@ -161,25 +153,24 @@ if search_query:
     for genre in df_d3:
         df_d3[genre] = df_d3[genre][df_d3[genre]['Application'].str.contains(search_query, case=False, na=False)]
 
+# Function to style dataframes
+def style_dataframe(df, header_color):
+    return df.style.set_table_styles([
+        {'selector': 'thead th', 'props': [('background-color', header_color), ('color', 'white'), ('font-weight', 'bold')]}]
+    )
+
 # Display Data based on selected filter
 if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    # Create two columns for side-by-side display
-    col1, col2 = st.columns(2)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))
     
-    # Display Top N Applications in the left column
-    with col1:
-        st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
-        st.write(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#89C55F'), ('color', 'white')]}]).reset_index(drop=True))
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#FF6347'))
     
-    # Display Bottom N Applications in the right column
-    with col2:
-        st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
-        st.write(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#FF4C4C'), ('color', 'white')]}]).reset_index(drop=True))
-
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
@@ -188,19 +179,12 @@ elif data_source == "By Category" and category_selected:
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    # Create two columns for side-by-side display
-    col1, col2 = st.columns(2)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))
     
-    # Display Top N Applications in the left column
-    with col1:
-        st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
-        st.write(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#89C55F'), ('color', 'white')]}]).reset_index(drop=True))
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#FF6347'))
     
-    # Display Bottom N Applications in the right column
-    with col2:
-        st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
-        st.write(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#FF4C4C'), ('color', 'white')]}]).reset_index(drop=True))
-
 elif data_source == "By Genre" and genre_selected:
     # Exclude blank sub-genres for display
     unique_sub_genres = [sub_genre for sub_genre in df_genre['Sub Genre'].unique() if sub_genre.strip() != '']
@@ -216,18 +200,11 @@ elif data_source == "By Genre" and genre_selected:
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    # Create two columns for side-by-side display
-    col1, col2 = st.columns(2)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))
     
-    # Display Top N Applications in the left column
-    with col1:
-        st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
-        st.write(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#89C55F'), ('color', 'white')]}]).reset_index(drop=True))
-    
-    # Display Bottom N Applications in the right column
-    with col2:
-        st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
-        st.write(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#FF4C4C'), ('color', 'white')]}]).reset_index(drop=True))
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#FF6347'))
 
 # Global Footer
 st.markdown(
