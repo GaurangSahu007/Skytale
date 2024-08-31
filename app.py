@@ -21,7 +21,7 @@ st.markdown(
         font-weight:bold;
         text-align: center;
         padding: 10px;
-        background-color: #89C55F;  /* Background color */
+        background-color: #006400;  /* Background color */
         margin-bottom: 20px;
         color: white;
     }
@@ -166,7 +166,7 @@ if data_source == "Overall Data":
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#006400'))  # Dark Green for Top N
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), ' #89C55F'))  # Dark Green for Top N
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Category" and category_selected:
@@ -177,7 +177,7 @@ elif data_source == "By Category" and category_selected:
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#006400'))  # Dark Green for Top N
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Genre" and genre_selected:
@@ -198,9 +198,9 @@ elif data_source == "By Genre" and genre_selected:
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#006400'))  # Dark Green for Top N
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 
 # Global Footer
