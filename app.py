@@ -98,11 +98,13 @@ elif data_source == "By Genre":
     # Default selection is the top genre sorted by Total Final Score
     genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=0)
     
-    if genre_selected:
-        # List subgenres directly without blanks
-        sub_genres = df_d3[genre_selected]['Sub Genre'].dropna().unique()  # Remove any blanks
-        if len(sub_genres) > 0:
-            sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
+    # Show the ranking of applications for the selected genre (without filtering by sub-genre)
+    df_genre = df_d3[genre_selected][df_d3[genre_selected]['Sub Genre'] != '']  # Exclude blanks
+
+    # Sub-genre filter (appears only after showing the overall genre data)
+    sub_genres = df_genre['Sub Genre'].unique()  # Unique sub-genres without blanks
+    if len(sub_genres) > 0:
+        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
 
 # Sidebar Footer
 st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
@@ -159,28 +161,33 @@ elif data_source == "By Category" and category_selected:
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
+    # Display the ranking for the entire selected genre
     df_genre = df_d3[genre_selected]
-    
-    if sub_genre_selected:
-        df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
-        selected_sub_genres = ' | '.join(sub_genre_selected)
-    else:
-        df_genre = df_genre[df_genre['Sub Genre'] != '']  # Exclude blanks
-        selected_sub_genres = ' | '.join(df_genre['Sub Genre'].unique()) if len(df_genre['Sub Genre'].unique()) > 0 else "No Subgenre"
-    
-    total_sub_genres = len(df_genre['Sub Genre'].unique())
-
-    st.markdown(f"<h3 style='text-align: center;'>Number of Sub Genres: {total_sub_genres}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<h4 style='text-align: center;'>Sub Genres: {selected_sub_genres}</h4>", unsafe_allow_html=True)
-
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
+
+    # If sub-genre(s) are selected, show filtered data
+    if sub_genre_selected:
+        df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
+        selected_sub_genres = ' | '.join(sub_genre_selected)
+        
+        total_sub_genres = len(df_genre['Sub Genre'].unique())
+        st.markdown(f"<h3 style='text-align: center;'>Number of Sub Genres: {total_sub_genres}</h3>", unsafe_allow_html=True)
+        st.markdown(f"<h4 style='text-align: center;'>Sub Genres: {selected_sub_genres}</h4>", unsafe_allow_html=True)
+
+        top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
+        top_apps = ensure_compatible_types(top_apps)
+        bottom_apps = ensure_compatible_types(bottom_apps)
+        
+        st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected} (Filtered by Sub Genre)</h3>", unsafe_allow_html=True)
+        st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
+        st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected} (Filtered by Sub Genre)</h3>", unsafe_allow_html=True)
+        st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
 # Global Footer
 st.markdown(
