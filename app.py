@@ -12,27 +12,6 @@ d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
 
-# Global Header with Center Alignment and Background Color
-st.markdown(
-    """
-    <style>
-    .header {
-        font-size:30px;
-        font-weight:bold;
-        text-align: center;
-        padding: 10px;
-        background-color: #006400;  /* Background color */
-        margin-bottom: 20px;
-        color: white;
-    }
-    .underline {
-        text-decoration: underline;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING</div>', unsafe_allow_html=True)
 
 # Load the data
 @st.cache_data
@@ -162,14 +141,55 @@ def style_dataframe(df, color):
 
 # Display Data based on selected filter
 if data_source == "Overall Data":
+    # Global Header with Center Alignment and Background Color
+    st.markdown(
+        """
+        <style>
+        .header {
+            font-size:30px;
+            font-weight:bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #006400;  /* Background color */
+            margin-bottom: 20px;
+            color: white;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING (Overall Data)</div>', unsafe_allow_html=True)
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), ' #89C55F'))  # Dark Green for Top N
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Category" and category_selected:
+    st.markdown(
+        """
+        <style>
+        .header {
+            font-size:30px;
+            font-weight:bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #006400;  /* Background color */
+            margin-bottom: 20px;
+            color: white;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING (By Category)</div>', unsafe_allow_html=True)
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
         columns_to_display.append('Purchase_Price')
@@ -181,6 +201,26 @@ elif data_source == "By Category" and category_selected:
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Genre" and genre_selected:
+    st.markdown(
+        """
+        <style>
+        .header {
+            font-size:30px;
+            font-weight:bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #006400;  /* Background color */
+            margin-bottom: 20px;
+            color: white;
+        }
+        .underline {
+            text-decoration: underline;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING (By Genre)</div>', unsafe_allow_html=True)
     # Exclude blank sub-genres for display
     unique_sub_genres = [sub_genre for sub_genre in df_genre['Sub Genre'].unique() if sub_genre.strip() != '']
     total_sub_genres = len(unique_sub_genres)
@@ -212,7 +252,7 @@ st.markdown(
         text-align: center;
         padding: 10px;
         margin-top: 30px;
-        background-color: #89C55F;  /* Footer color matches header */
+        background-color: #006400;  /* Footer color matches header */
         color: white;
         font-weight: bold;
     }
