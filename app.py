@@ -201,7 +201,8 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-st.markdown('<div class="footer">
+st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
+
 
 
 # In[ ]:
