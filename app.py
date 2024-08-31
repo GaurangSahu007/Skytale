@@ -158,10 +158,6 @@ def extract_top_bottom(df, top_n, bottom_n):
     top_apps = df.nsmallest(top_n, 'FinalRank')
     bottom_apps = df.nlargest(bottom_n, 'FinalRank')
     
-    # Round 'FinalRank' and 'Ratings' to 2 decimal places
-    top_apps[['FinalRank', 'Ratings']] = top_apps[['FinalRank', 'Ratings']].round(2)
-    bottom_apps[['FinalRank', 'Ratings']] = bottom_apps[['FinalRank', 'Ratings']].round(2)
-    
     return top_apps, bottom_apps
 
 # Columns to Display
@@ -175,6 +171,14 @@ def ensure_compatible_types(df):
                 df[column] = df[column].astype(str)
             elif pd.api.types.is_numeric_dtype(df[column]):
                 df[column] = pd.to_numeric(df[column], errors='coerce')
+    return df
+
+# Function to round FinalRank and Ratings to 2 decimal places
+def round_decimals(df):
+    if 'FinalRank' in df.columns:
+        df['FinalRank'] = df['FinalRank'].round(2)
+    if 'Ratings' in df.columns:
+        df['Ratings'] = df['Ratings'].round(2)
     return df
 
 # Apply Search Filter Globally
@@ -195,8 +199,8 @@ def style_dataframe(df, color):
 # Display Data based on selected filter
 if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
-    top_apps = ensure_compatible_types(top_apps)
-    bottom_apps = ensure_compatible_types(bottom_apps)
+    top_apps = ensure_compatible_types(round_decimals(top_apps))
+    bottom_apps = ensure_compatible_types(round_decimals(bottom_apps))
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications</h3>", unsafe_allow_html=True)
@@ -206,8 +210,8 @@ elif data_source == "By Category" and category_selected:
     if category_selected.lower() == "paid":
         columns_to_display.append('Purchase_Price')
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
-    top_apps = ensure_compatible_types(top_apps)
-    bottom_apps = ensure_compatible_types(bottom_apps)
+    top_apps = ensure_compatible_types(round_decimals(top_apps))
+    bottom_apps = ensure_compatible_types(round_decimals(bottom_apps))
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
@@ -227,8 +231,8 @@ elif data_source == "By Genre" and genre_selected:
 
     # If subgenres are selected, show the specific subgenre ranking; otherwise, show the overall genre ranking
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
-    top_apps = ensure_compatible_types(top_apps)
-    bottom_apps = ensure_compatible_types(bottom_apps)
+    top_apps = ensure_compatible_types(round_decimals(top_apps))
+    bottom_apps = ensure_compatible_types(round_decimals(bottom_apps))
     
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
