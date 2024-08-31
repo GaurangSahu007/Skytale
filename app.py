@@ -58,6 +58,13 @@ st.sidebar.markdown(
         padding: 10px;
         text-align: center;
     }
+    .sidebar-footer {
+        font-size:16px;
+        text-align: center;
+        padding: 10px;
+        margin-top: 20px;
+        font-weight: bold;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -84,17 +91,16 @@ sub_genre_selected = None
 if data_source == "By Category":
     category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
 elif data_source == "By Genre":
-    # Sort genres by Total Final Score
+    # Arrange genres by "Total Final Score"
     genre_df_sorted = df_d1.groupby('Genre')['FinalScore'].sum().reset_index().sort_values(by='FinalScore', ascending=False)
     sorted_genres = genre_df_sorted['Genre'].tolist()
     
-    # Select Top Genre (by Total Final Score) by default
+    # Default selection is the top genre sorted by Total Final Score
     genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=0)
     
     if genre_selected:
-        # List subgenres without blanks
+        # List subgenres directly without blanks
         sub_genres = df_d3[genre_selected]['Sub Genre'].dropna().unique()  # Remove any blanks
-        sub_genres = [sub_genre for sub_genre in sub_genres if sub_genre != '']  # Exclude blanks
         if len(sub_genres) > 0:
             sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
 
