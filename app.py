@@ -28,6 +28,14 @@ st.markdown(
     .underline {
         text-decoration: underline;
     }
+    .green-header th {
+        background-color: #89C55F;
+        color: white;
+    }
+    .red-header th {
+        background-color: #FF4C4C;
+        color: white;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -165,14 +173,12 @@ if data_source == "Overall Data":
     # Display Top N Applications in the left column
     with col1:
         st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
-        st.markdown("<style>.green-header th { background-color: #89C55F; color: white; }</style>", unsafe_allow_html=True)
-        st.dataframe(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('class', 'green-header')]}]).reset_index(drop=True))
+        st.write(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#89C55F'), ('color', 'white')]}]).reset_index(drop=True))
     
     # Display Bottom N Applications in the right column
     with col2:
         st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
-        st.markdown("<style>.red-header th { background-color: #FF4C4C; color: white; }</style>", unsafe_allow_html=True)
-        st.dataframe(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('class', 'red-header')]}]).reset_index(drop=True))
+        st.write(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#FF4C4C'), ('color', 'white')]}]).reset_index(drop=True))
 
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
@@ -188,14 +194,12 @@ elif data_source == "By Category" and category_selected:
     # Display Top N Applications in the left column
     with col1:
         st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
-        st.markdown("<style>.green-header th { background-color: #89C55F; color: white; }</style>", unsafe_allow_html=True)
-        st.dataframe(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('class', 'green-header')]}]).reset_index(drop=True))
+        st.write(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#89C55F'), ('color', 'white')]}]).reset_index(drop=True))
     
     # Display Bottom N Applications in the right column
     with col2:
         st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
-        st.markdown("<style>.red-header th { background-color: #FF4C4C; color: white; }</style>", unsafe_allow_html=True)
-        st.dataframe(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('class', 'red-header')]}]).reset_index(drop=True))
+        st.write(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#FF4C4C'), ('color', 'white')]}]).reset_index(drop=True))
 
 elif data_source == "By Genre" and genre_selected:
     # Exclude blank sub-genres for display
@@ -218,14 +222,12 @@ elif data_source == "By Genre" and genre_selected:
     # Display Top N Applications in the left column
     with col1:
         st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
-        st.markdown("<style>.green-header th { background-color: #89C55F; color: white; }</style>", unsafe_allow_html=True)
-        st.dataframe(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('class', 'green-header')]}]).reset_index(drop=True))
+        st.write(top_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#89C55F'), ('color', 'white')]}]).reset_index(drop=True))
     
     # Display Bottom N Applications in the right column
     with col2:
         st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
-        st.markdown("<style>.red-header th { background-color: #FF4C4C; color: white; }</style>", unsafe_allow_html=True)
-        st.dataframe(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('class', 'red-header')]}]).reset_index(drop=True))
+        st.write(bottom_apps.style.set_table_styles([{'selector': 'th', 'props': [('background-color', '#FF4C4C'), ('color', 'white')]}]).reset_index(drop=True))
 
 # Global Footer
 st.markdown(
