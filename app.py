@@ -41,7 +41,14 @@ def load_data():
     df_d2 = pd.read_excel(d2_path, sheet_name=None)  # Load all sheets as dict
     df_d3 = pd.read_excel(d3_path, sheet_name=None)  # Load all sheets as dict
     
-    # Ensure 'Sub Genre' NaN values are treated as blank
+    # Ensure 'Sub Genre' NaN values are treated as blank for all datasets
+    if 'Sub Genre' in df_d1.columns:
+        df_d1['Sub Genre'] = df_d1['Sub Genre'].fillna('')
+
+    for category in df_d2:
+        if 'Sub Genre' in df_d2[category].columns:
+            df_d2[category]['Sub Genre'] = df_d2[category]['Sub Genre'].fillna('')
+    
     for genre in df_d3:
         if 'Sub Genre' in df_d3[genre].columns:
             df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
@@ -72,13 +79,13 @@ st.sidebar.markdown(
 
 st.sidebar.image("SCMHRD.png", use_column_width=True)  # Adjust the image path
 
-st.sidebar.markdown('<h2 style="text-align: center;">Filter</h2>', unsafe_allow_html=True)
+st.sidebar.markdown('<h2 style="text-align: center;">Filters</h2>', unsafe_allow_html=True)
 
 # Global Search Option
-search_query = st.sidebar.text_input("Search Application by Name:")
+search_query = st.sidebar.text_input("Search by Name:")
 
 # Select N for Top/Bottom applications
-n_value = st.sidebar.number_input("Enter N value:", min_value=1, value=10)
+n_value = st.sidebar.number_input("Enter N value:", min_value=1, value=5)
 
 # Data Source Selection
 data_source = st.sidebar.radio("Select Data Source:", ("Overall Data", "By Category", "By Genre"))
@@ -172,9 +179,9 @@ elif data_source == "By Genre" and genre_selected:
     total_sub_genres = len(unique_sub_genres)
     
     # Display genre overview without subgenre filtering first
-    sub_genres_display = ' | '.join(unique_sub_genres) if total_sub_genres > 0 else "No Subgenre"
-    st.markdown(f"<h3 style='text-align: center;'>Number of Sub Genres: {total_sub_genres}</h3>", unsafe_allow_html=True)
-    st.markdown(f"<h4 style='text-align: center;'>Sub Genres: {sub_genres_display}</h4>", unsafe_allow_html=True)
+    sub_genres_display = ' | '.join(unique_sub_genres) if total_sub_genres > 0 else "No Sub Genres"
+    st.markdown(f"<h4 style='text-align: center;'>Total Sub Genres: {total_sub_genres}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h4 style='text-align: center;'>Name of Sub Genres: {sub_genres_display}</h4>", unsafe_allow_html=True)
 
     # If subgenres are selected, show the specific subgenre ranking; otherwise, show the overall genre ranking
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
