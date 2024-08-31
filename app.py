@@ -25,6 +25,9 @@ st.markdown(
         margin-bottom: 20px;
         color: white;
     }
+    .underline {
+        text-decoration: underline;
+    }
     </style>
     """,
     unsafe_allow_html=True
@@ -60,7 +63,9 @@ st.sidebar.markdown(
         text-align: center;
         padding: 10px;
         margin-top: 20px;
-        background-color: #f0f0f0;
+        background-color: #89C55F;  /* Footer color matches header */
+        color: white;
+        font-weight: bold;
     }
     </style>
     """,
@@ -96,12 +101,13 @@ elif data_source == "By Genre":
     genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=sorted_genres.index('Communication'))
     
     if genre_selected:
-        # Exclude 'All' option from subgenre selection and list subgenres directly
+        # List subgenres directly without blanks
         sub_genres = df_d3[genre_selected]['Sub Genre'].dropna().unique()  # Remove any blanks
-        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
+        if len(sub_genres) > 0:
+            sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
 
 # Sidebar Footer
-st.sidebar.markdown('<div class="sidebar-footer"><b>Created by Team Great Knight Eagle</b></div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
 # Function to extract top and bottom N applications
 def extract_top_bottom(df, top_n, bottom_n):
@@ -139,10 +145,9 @@ if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    st.subheader(f"Total Applications: {df_d1.shape[0]}")
-    st.subheader(f"Top {n_value} Applications from Overall Data")
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} Applications from Overall Data")
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
@@ -151,10 +156,9 @@ elif data_source == "By Category" and category_selected:
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    st.subheader(f"Total Applications: {df_category.shape[0]}")
-    st.subheader(f"Top {n_value} {category_selected} Applications")
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} {category_selected} Applications")
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
@@ -175,9 +179,9 @@ elif data_source == "By Genre" and genre_selected:
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    st.markdown(f"<h3 style='text-align: center;'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.markdown(f"<h3 style='text-align: center;'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
 # Global Footer
@@ -189,14 +193,15 @@ st.markdown(
         text-align: center;
         padding: 10px;
         margin-top: 30px;
-        background-color: #f0f0f0;
+        background-color: #89C55F;  /* Footer color matches header */
+        color: white;
         font-weight: bold;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
-st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
+st.markdown('<div class="footer">
 
 
 # In[ ]:
