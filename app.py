@@ -102,7 +102,7 @@ elif data_source == "By Genre":
         genre_options.append(formatted_genre_name)
     
     # Default selection is the top genre sorted by Total Final Score
-    genre_selected_display = st.sidebar.selectbox("Select Genre:", genre_options, index=0)
+    genre_selected_display = st.sidebar.selectbox("Select Genre (Total Sub Genre | Total Application):", genre_options, index=0)
     
     # Extract the actual genre name from the formatted display
     genre_selected = genre_selected_display.split(" (")[0]
