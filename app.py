@@ -7,10 +7,34 @@
 import streamlit as st
 import pandas as pd
 
+# Load the data
+@st.cache_data
+def load_data():
+    df_d1 = pd.read_excel(d1_path)
+    df_d2 = pd.read_excel(d2_path, sheet_name=None)  # Load all sheets as dict
+    df_d3 = pd.read_excel(d3_path, sheet_name=None)  # Load all sheets as dict
+    
+    # Ensure 'Sub Genre' NaN values are treated as blank for all datasets
+    if 'Sub Genre' in df_d1.columns:
+        df_d1['Sub Genre'] = df_d1['Sub Genre'].fillna('')
+
+    for category in df_d2:
+        if 'Sub Genre' in df_d2[category].columns:
+            df_d2[category]['Sub Genre'] = df_d2[category]['Sub Genre'].fillna('')
+    
+    for genre in df_d3:
+        if 'Sub Genre' in df_d3[genre].columns:
+            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
+    
+    return df_d1, df_d2, df_d3
+
 # Load datasets
 d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
+
+# Load the data at the beginning
+df_d1, df_d2, df_d3 = load_data()
 
 # Define a function to set the header dynamically
 def set_dynamic_header(selected_filter, category_selected=None):
@@ -110,29 +134,6 @@ st.markdown(
 )
 st.markdown(f'<div class="header">{dynamic_header}</div>', unsafe_allow_html=True)
 
-# Load the data
-@st.cache_data
-def load_data():
-    df_d1 = pd.read_excel(d1_path)
-    df_d2 = pd.read_excel(d2_path, sheet_name=None)  # Load all sheets as dict
-    df_d3 = pd.read_excel(d3_path, sheet_name=None)  # Load all sheets as dict
-    
-    # Ensure 'Sub Genre' NaN values are treated as blank for all datasets
-    if 'Sub Genre' in df_d1.columns:
-        df_d1['Sub Genre'] = df_d1['Sub Genre'].fillna('')
-
-    for category in df_d2:
-        if 'Sub Genre' in df_d2[category].columns:
-            df_d2[category]['Sub Genre'] = df_d2[category]['Sub Genre'].fillna('')
-    
-    for genre in df_d3:
-        if 'Sub Genre' in df_d3[genre].columns:
-            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
-    
-    return df_d1, df_d2, df_d3
-
-df_d1, df_d2, df_d3 = load_data()
-
 # Sidebar Footer
 st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
@@ -180,7 +181,7 @@ if data_source == "Overall Data":
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), ' #89C55F'))  # Dark Green for Top N
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Category" and category_selected:
