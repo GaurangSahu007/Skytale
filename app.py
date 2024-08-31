@@ -6,64 +6,11 @@
 
 import streamlit as st
 import pandas as pd
-import base64
 
 # Load datasets
 d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
-bg_image_path = "Background.jpg"  # Replace with your local image path
-
-# Function to encode image to base64
-def get_base64_of_bin_file(bin_file):
-    with open(bin_file, 'rb') as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
-
-# Encode the background image
-bg_image_base64 = get_base64_of_bin_file(bg_image_path)
-
-# Global Header with Background Image CSS and 70% Transparency
-st.markdown(
-    f"""
-    <style>
-    .header {{
-        font-size:30px;
-        font-weight:bold;
-        text-align: center;
-        padding: 10px;
-        background-color: rgba(240, 240, 240, 0.7);
-        margin-bottom: 20px;
-    }}
-    .main {{
-        background-image: url(data:image/jpg;base64,{bg_image_base64});
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        padding: 20px;
-        position: relative; /* For overlay */
-    }}
-    .main::before {{
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(255, 255, 255, 0.7); /* Adjust transparency */
-        z-index: 1;
-    }}
-    .main-content {{
-        position: relative;
-        z-index: 2; /* Content above the overlay */
-    }}
-    </style>
-    <div class="main">
-    """,
-    unsafe_allow_html=True
-)
-
-st.markdown('<div class="header">CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS</div>', unsafe_allow_html=True)
 
 # Load the data
 @st.cache_data
@@ -81,29 +28,10 @@ def load_data():
 
 df_d1, df_d2, df_d3 = load_data()
 
-# Sidebar Controls with Center-aligned Heading and Footer
-st.sidebar.markdown(
-    """
-    <style>
-    .sidebar .sidebar-content {
-        padding: 10px;
-        text-align: center;
-    }
-    .sidebar-footer {
-        font-size:16px;
-        text-align: center;
-        padding: 10px;
-        margin-top: 20px;
-        background-color: #f0f0f0;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
+# Sidebar Controls
 st.sidebar.image("SCMHRD.png", use_column_width=True)  # Adjust the image path
 
-st.sidebar.markdown('<h2 style="text-align: center;">Filter</h2>', unsafe_allow_html=True)
+st.sidebar.markdown("<h1 style='text-align: center;'>Filter</h1>", unsafe_allow_html=True)
 
 # Global Search Option
 search_query = st.sidebar.text_input("Search Application by Name:")
@@ -116,23 +44,19 @@ data_source = st.sidebar.radio("Select Data Source:", ("Overall Data", "By Categ
 
 # Filter by Category or Genre if D2 or D3 is selected
 category_selected = None
-genre_selected = "Communication"  # Set default genre to "Communication"
+genre_selected = None
 sub_genre_selected = None
 
 if data_source == "By Category":
     category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
 elif data_source == "By Genre":
-    genre_selected = st.sidebar.selectbox("Select Genre:", list(df_d3.keys()), index=list(df_d3.keys()).index("Communication"))
+    genre_selected = st.sidebar.selectbox("Select Genre:", list(df_d3.keys()))
     if genre_selected:
         sub_genres = df_d3[genre_selected]['Sub Genre'].unique()
         sub_genres = [sg for sg in sub_genres if sg]  # Remove empty strings
-        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=["All"] + list(sub_genres), default=None)  # Default to nothing
-
-# Sidebar Footer
-st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
+        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))  # Removed "All" option
 
 # Main Display
-st.markdown('<div class="main-content">', unsafe_allow_html=True)
 st.title("Application Ranking Viewer")
 
 # Function to extract top and bottom N applications
@@ -171,11 +95,13 @@ if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
+    top_app_name = top_apps.iloc[0]['Application'] if not top_apps.empty else "N/A"
+    bottom_app_name = bottom_apps.iloc[-1]['Application'] if not bottom_apps.empty else "N/A"
     st.subheader(f"Total Applications: {df_d1.shape[0]}")
-    st.subheader(f"Top {n_value} Applications from Overall Data")
-    st.dataframe(top_apps[columns_to_display].reset_index(drop=True))  # Fixed this line
-    st.subheader(f"Bottom {n_value} Applications from Overall Data")
-    st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))  # Fixed this line
+    st.subheader(f"Top {n_value} Applications from Overall Data - Top Application: {top_app_name}")
+    st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
+    st.subheader(f"Bottom {n_value} Applications from Overall Data - Lowest Rank Application: {bottom_app_name}")
+    st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
@@ -183,15 +109,17 @@ elif data_source == "By Category" and category_selected:
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
+    top_app_name = top_apps.iloc[0]['Application'] if not top_apps.empty else "N/A"
+    bottom_app_name = bottom_apps.iloc[-1]['Application'] if not bottom_apps.empty else "N/A"
     st.subheader(f"Total Applications: {df_category.shape[0]}")
-    st.subheader(f"Top {n_value} {category_selected} Applications")
-    st.dataframe(top_apps[columns_to_display].reset_index(drop=True))  # Fixed this line
-    st.subheader(f"Bottom {n_value} {category_selected} Applications")
-    st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))  # Fixed this line
+    st.subheader(f"Top {n_value} {category_selected} Applications - Top Application: {top_app_name}")
+    st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
+    st.subheader(f"Bottom {n_value} {category_selected} Applications - Lowest Rank Application: {bottom_app_name}")
+    st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
     
-    if sub_genre_selected and "All" not in sub_genre_selected:
+    if sub_genre_selected:
         df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
         total_applications = df_genre.shape[0]
         selected_sub_genres = ', '.join(sub_genre_selected)
@@ -204,14 +132,19 @@ elif data_source == "By Genre" and genre_selected:
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
-    if "All" not in sub_genre_selected:
+    sub_genre_count = df_genre['Sub Genre'].nunique()
+    sub_genre_display = f"{sub_genre_count} Sub Genre(s)" if sub_genre_count > 0 else "No Sub Genre"
+    
+    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected} ({sub_genre_display})")
+    if sub_genre_selected:
         st.subheader(f"(Sub Genre: {selected_sub_genres})")
-    st.dataframe(top_apps[columns_to_display].reset_index(drop=True))  # Fixed this line
+    top_app_name = top_apps.iloc[0]['Application'] if not top_apps.empty else "N/A"
+    bottom_app_name = bottom_apps.iloc[-1]['Application'] if not bottom_apps.empty else "N/A"
+    st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
     st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
-    if "All" not in sub_genre_selected:
+    if sub_genre_selected:
         st.subheader(f"(Sub Genre: {selected_sub_genres})")
-    st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))  # Fixed this line
+    st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
 
 # In[ ]:
