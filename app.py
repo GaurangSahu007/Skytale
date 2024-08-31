@@ -12,29 +12,16 @@ d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
 
-
-# Load the data
-@st.cache_data
-def load_data():
-    df_d1 = pd.read_excel(d1_path)
-    df_d2 = pd.read_excel(d2_path, sheet_name=None)  # Load all sheets as dict
-    df_d3 = pd.read_excel(d3_path, sheet_name=None)  # Load all sheets as dict
-    
-    # Ensure 'Sub Genre' NaN values are treated as blank for all datasets
-    if 'Sub Genre' in df_d1.columns:
-        df_d1['Sub Genre'] = df_d1['Sub Genre'].fillna('')
-
-    for category in df_d2:
-        if 'Sub Genre' in df_d2[category].columns:
-            df_d2[category]['Sub Genre'] = df_d2[category]['Sub Genre'].fillna('')
-    
-    for genre in df_d3:
-        if 'Sub Genre' in df_d3[genre].columns:
-            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
-    
-    return df_d1, df_d2, df_d3
-
-df_d1, df_d2, df_d3 = load_data()
+# Define a function to set the header dynamically
+def set_dynamic_header(selected_filter, category_selected=None):
+    if selected_filter == "Overall Data":
+        return "THE ADVENT OF SMARTPHONE APPLICATIONS RANKING<br><span style='font-size:20px;'>(Overall Data)</span>"
+    elif selected_filter == "By Category" and category_selected:
+        return f"THE ADVENT OF SMARTPHONE APPLICATIONS RANKING<br><span style='font-size:20px;'>({category_selected} Apps)</span>"
+    elif selected_filter == "By Genre":
+        return "THE ADVENT OF SMARTPHONE APPLICATIONS RANKING<br><span style='font-size:20px;'>(By Genre)</span>"
+    else:
+        return "THE ADVENT OF SMARTPHONE APPLICATIONS RANKING"
 
 # Sidebar Controls with Center-aligned Heading and Footer
 st.sidebar.markdown(
@@ -98,6 +85,54 @@ elif data_source == "By Genre":
     if sub_genre_selected:
         df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
 
+# Set dynamic header based on selection
+dynamic_header = set_dynamic_header(data_source, category_selected)
+
+# Display the dynamic header
+st.markdown(
+    f"""
+    <style>
+    .header {{
+        font-size:30px;
+        font-weight:bold;
+        text-align: center;
+        padding: 10px;
+        background-color: #006400;  /* Background color */
+        margin-bottom: 20px;
+        color: white;
+    }}
+    .underline {{
+        text-decoration: underline;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown(f'<div class="header">{dynamic_header}</div>', unsafe_allow_html=True)
+
+# Load the data
+@st.cache_data
+def load_data():
+    df_d1 = pd.read_excel(d1_path)
+    df_d2 = pd.read_excel(d2_path, sheet_name=None)  # Load all sheets as dict
+    df_d3 = pd.read_excel(d3_path, sheet_name=None)  # Load all sheets as dict
+    
+    # Ensure 'Sub Genre' NaN values are treated as blank for all datasets
+    if 'Sub Genre' in df_d1.columns:
+        df_d1['Sub Genre'] = df_d1['Sub Genre'].fillna('')
+
+    for category in df_d2:
+        if 'Sub Genre' in df_d2[category].columns:
+            df_d2[category]['Sub Genre'] = df_d2[category]['Sub Genre'].fillna('')
+    
+    for genre in df_d3:
+        if 'Sub Genre' in df_d3[genre].columns:
+            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
+    
+    return df_d1, df_d2, df_d3
+
+df_d1, df_d2, df_d3 = load_data()
+
 # Sidebar Footer
 st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
@@ -141,55 +176,14 @@ def style_dataframe(df, color):
 
 # Display Data based on selected filter
 if data_source == "Overall Data":
-    # Global Header with Center Alignment and Background Color
-    st.markdown(
-        """
-        <style>
-        .header {
-            font-size:30px;
-            font-weight:bold;
-            text-align: center;
-            padding: 10px;
-            background-color: #006400;  /* Background color */
-            margin-bottom: 20px;
-            color: white;
-        }
-        .underline {
-            text-decoration: underline;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING (Overall Data)</div>', unsafe_allow_html=True)
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), ' #89C55F'))  # Dark Green for Top N
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Category" and category_selected:
-    st.markdown(
-        """
-        <style>
-        .header {
-            font-size:30px;
-            font-weight:bold;
-            text-align: center;
-            padding: 10px;
-            background-color: #006400;  /* Background color */
-            margin-bottom: 20px;
-            color: white;
-        }
-        .underline {
-            text-decoration: underline;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING (By Category)</div>', unsafe_allow_html=True)
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
         columns_to_display.append('Purchase_Price')
@@ -201,31 +195,11 @@ elif data_source == "By Category" and category_selected:
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Genre" and genre_selected:
-    st.markdown(
-        """
-        <style>
-        .header {
-            font-size:30px;
-            font-weight:bold;
-            text-align: center;
-            padding: 10px;
-            background-color: #006400;  /* Background color */
-            margin-bottom: 20px;
-            color: white;
-        }
-        .underline {
-            text-decoration: underline;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
-    st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING (By Genre)</div>', unsafe_allow_html=True)
     # Exclude blank sub-genres for display
     unique_sub_genres = [sub_genre for sub_genre in df_genre['Sub Genre'].unique() if sub_genre.strip() != '']
     total_sub_genres = len(unique_sub_genres)
 
-     # Display selected Genre title
+    # Display selected Genre title
     st.markdown(f"<h3 style='text-align: center;' class='underline'>{genre_selected}</h3>", unsafe_allow_html=True)
     
     # Display genre overview without subgenre filtering first
