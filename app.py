@@ -12,6 +12,24 @@ d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
 
+# Global Header
+st.markdown(
+    """
+    <style>
+    .header {
+        font-size:30px;
+        font-weight:bold;
+        text-align: center;
+        padding: 10px;
+        background-color: #f0f0f0;
+        margin-bottom: 20px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown('<div class="header">CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS</div>', unsafe_allow_html=True)
+
 # Load the data
 @st.cache_data
 def load_data():
@@ -22,15 +40,35 @@ def load_data():
     # Ensure 'Sub Genre' NaN values are treated as blank
     for genre in df_d3:
         if 'Sub Genre' in df_d3[genre].columns:
-            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('No sub genre')
+            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
     
     return df_d1, df_d2, df_d3
 
 df_d1, df_d2, df_d3 = load_data()
 
-# Sidebar Controls
-st.sidebar.title("Filter")
-st.sidebar.markdown('<div style="text-align: center;">Filter</div>', unsafe_allow_html=True)
+# Sidebar Controls with Center-aligned Heading and Footer
+st.sidebar.markdown(
+    """
+    <style>
+    .sidebar .sidebar-content {
+        padding: 10px;
+        text-align: center;
+    }
+    .sidebar-footer {
+        font-size:16px;
+        text-align: center;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #f0f0f0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+st.sidebar.image("SCMHRD.png", use_column_width=True)  # Adjust the image path
+
+st.sidebar.markdown('<h2 style="text-align: center;">Filter</h2>', unsafe_allow_html=True)
 
 # Global Search Option
 search_query = st.sidebar.text_input("Search Application by Name:")
@@ -53,13 +91,13 @@ elif data_source == "By Genre":
     if genre_selected:
         sub_genres = df_d3[genre_selected]['Sub Genre'].unique()
         sub_genres = [sg for sg in sub_genres if sg]  # Remove empty strings
-        if sub_genres.size == 0:  # No sub genres available
-            st.sidebar.write("No sub genre")
-        else:
-            sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
+        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=["All"] + list(sub_genres), default="All")
+
+# Sidebar Footer
+st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
 # Main Display
-st.title("CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS")
+st.title("Application Ranking Viewer")
 
 # Function to extract top and bottom N applications
 def extract_top_bottom(df, top_n, bottom_n):
@@ -97,15 +135,11 @@ if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    
-    st.markdown("## Top 10 Applications from Overall Data")
-    st.markdown(f"### Top Application: {top_apps.iloc[0]['Application']}")
+    st.subheader(f"Total Applications: {df_d1.shape[0]}")
+    st.subheader(f"Top {n_value} Applications from Overall Data")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    
-    st.markdown("## Bottom 10 Applications from Overall Data")
-    st.markdown(f"### Lowest Rank Application: {bottom_apps.iloc[-1]['Application']}")
+    st.subheader(f"Bottom {n_value} Applications from Overall Data")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
-
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
@@ -113,44 +147,52 @@ elif data_source == "By Category" and category_selected:
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    
-    st.markdown(f"## Top 10 {category_selected} Applications")
-    st.markdown(f"### Top Application: {top_apps.iloc[0]['Application']}")
+    st.subheader(f"Total Applications: {df_category.shape[0]}")
+    st.subheader(f"Top {n_value} {category_selected} Applications")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    
-    st.markdown(f"## Bottom 10 {category_selected} Applications")
-    st.markdown(f"### Lowest Rank Application: {bottom_apps.iloc[-1]['Application']}")
+    st.subheader(f"Bottom {n_value} {category_selected} Applications")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
-
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
     
-    if sub_genre_selected:
+    if sub_genre_selected and "All" not in sub_genre_selected:
         df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
         total_applications = df_genre.shape[0]
         selected_sub_genres = ', '.join(sub_genre_selected)
         st.subheader(f"Total Applications in Selected Sub Genre(s): {total_applications}")
     else:
-        selected_sub_genres = "No sub genre"
+        selected_sub_genres = "All Sub Genres"
         total_applications = df_genre.shape[0]
-        st.subheader(f"Total Applications: {total_applications}")
-    
+
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    st.markdown(f"## Top 10 Applications for Genre: {genre_selected}")
-    if sub_genre_selected:
-        st.markdown(f"(Sub Genre: {selected_sub_genres})")
-    st.markdown(f"### Top Application: {top_apps.iloc[0]['Application']}")
+    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
+    if "All" not in sub_genre_selected:
+        st.subheader(f"(Sub Genre: {selected_sub_genres})")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    
-    st.markdown(f"## Bottom 10 Applications for Genre: {genre_selected}")
-    if sub_genre_selected:
-        st.markdown(f"(Sub Genre: {selected_sub_genres})")
-    st.markdown(f"### Lowest Rank Application: {bottom_apps.iloc[-1]['Application']}")
+    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
+    if "All" not in sub_genre_selected:
+        st.subheader(f"(Sub Genre: {selected_sub_genres})")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
+# Global Footer
+st.markdown(
+    """
+    <style>
+    .footer {
+        font-size:16px;
+        text-align: center;
+        padding: 10px;
+        margin-top: 30px;
+        background-color: #f0f0f0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
 
 # In[ ]:
