@@ -6,14 +6,24 @@
 
 import streamlit as st
 import pandas as pd
+import base64
 
 # Load datasets
 d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
-bg_image_path = "background.png"  # Replace with your local image path
+bg_image_path = "Background.jpg"  # Replace with your local image path
 
-# Global Header
+# Function to encode image to base64
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# Encode the background image
+bg_image_base64 = get_base64_of_bin_file(bg_image_path)
+
+# Global Header with Background Image CSS
 st.markdown(
     f"""
     <style>
@@ -26,20 +36,17 @@ st.markdown(
         margin-bottom: 20px;
     }}
     .main {{
-        background-image: url(data:image/png;base64,{st.image('Background.jpg')});
+        background-image: url(data:image/jpg;base64,{bg_image_base64});
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-        opacity: 0.7; /* Adjust the transparency */
         padding: 20px;
     }}
     </style>
+    <div class="main">
     """,
     unsafe_allow_html=True
 )
-
-# Apply background CSS
-st.markdown('<div class="main">', unsafe_allow_html=True)
 
 st.markdown('<div class="header">CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS</div>', unsafe_allow_html=True)
 
@@ -208,7 +215,7 @@ st.markdown(
 st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
 # Close background div
-st.markdown('</div
+st.markdown('</div>', unsafe_allow_html=True)  # Fix the syntax error here
 
 
 # In[ ]:
