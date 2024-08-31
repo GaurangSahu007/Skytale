@@ -12,7 +12,7 @@ d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
 
-# Global Header
+# Global Header with Center Alignment and Background Color
 st.markdown(
     """
     <style>
@@ -21,14 +21,15 @@ st.markdown(
         font-weight:bold;
         text-align: center;
         padding: 10px;
-        background-color: #f0f0f0;
+        background-color: #89C55F;  /* Background color */
         margin-bottom: 20px;
+        color: white;
     }
     </style>
     """,
     unsafe_allow_html=True
 )
-st.markdown('<div class="header">CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS</div>', unsafe_allow_html=True)
+st.markdown('<div class="header">THE ADVENT OF SMARTPHONE APPLICATIONS RANKING</div>', unsafe_allow_html=True)
 
 # Load the data
 @st.cache_data
@@ -100,7 +101,7 @@ elif data_source == "By Genre":
         sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
 
 # Sidebar Footer
-st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
+st.sidebar.markdown('<div class="sidebar-footer"><b>Created by Team Great Knight Eagle</b></div>', unsafe_allow_html=True)
 
 # Function to extract top and bottom N applications
 def extract_top_bottom(df, top_n, bottom_n):
@@ -162,20 +163,21 @@ elif data_source == "By Genre" and genre_selected:
         df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
         selected_sub_genres = ' | '.join(sub_genre_selected)
     else:
-        selected_sub_genres = "No Subgenre"
+        df_genre = df_genre[df_genre['Sub Genre'] != '']  # Exclude blanks
+        selected_sub_genres = ' | '.join(df_genre['Sub Genre'].unique()) if len(df_genre['Sub Genre'].unique()) > 0 else "No Subgenre"
     
     total_sub_genres = len(df_genre['Sub Genre'].unique())
 
-    st.markdown(f"### Number of Sub Genres: {total_sub_genres}")
-    st.markdown(f"**Sub Genres:** {selected_sub_genres}")
+    st.markdown(f"<h3 style='text-align: center;'>Number of Sub Genres: {total_sub_genres}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h4 style='text-align: center;'>Sub Genres: {selected_sub_genres}</h4>", unsafe_allow_html=True)
 
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected}")
+    st.markdown(f"<h3 style='text-align: center;'>Top {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
+    st.markdown(f"<h3 style='text-align: center;'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 
 # Global Footer
@@ -188,6 +190,7 @@ st.markdown(
         padding: 10px;
         margin-top: 30px;
         background-color: #f0f0f0;
+        font-weight: bold;
     }
     </style>
     """,
