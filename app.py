@@ -90,11 +90,23 @@ if data_source == "By Category":
 elif data_source == "By Genre":
     # Arrange genres by "Total Final Score"
     genre_df_sorted = df_d1.groupby('Genre')['FinalScore'].sum().reset_index().sort_values(by='FinalScore', ascending=False)
-    sorted_genres = genre_df_sorted['Genre'].tolist()
+    
+    # Calculate the number of sub-genres and total applications for each genre
+    genre_options = []
+    for genre in genre_df_sorted['Genre']:
+        df_genre = df_d3[genre]
+        unique_sub_genres = [sub_genre for sub_genre in df_genre['Sub Genre'].unique() if sub_genre.strip() != '']
+        total_sub_genres = len(unique_sub_genres)
+        total_apps = len(df_genre)
+        formatted_genre_name = f"{genre} ({total_sub_genres} | {total_apps})"
+        genre_options.append(formatted_genre_name)
     
     # Default selection is the top genre sorted by Total Final Score
-    genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=0)
+    genre_selected_display = st.sidebar.selectbox("Select Genre:", genre_options, index=0)
     
+    # Extract the actual genre name from the formatted display
+    genre_selected = genre_selected_display.split(" (")[0]
+
     # Show overall ranking for the selected genre without any subgenre filter
     df_genre = df_d3[genre_selected]
     
