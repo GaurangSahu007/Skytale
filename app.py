@@ -88,6 +88,30 @@ category_selected = None
 genre_selected = None
 sub_genre_selected = None
 
+if data_source == "By Category":
+    category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
+elif data_source == "By Genre":
+    # Arrange genres by "Total Final Score"
+    genre_df_sorted = df_d1.groupby('Genre')['FinalScore'].sum().reset_index().sort_values(by='FinalScore', ascending=False)
+    sorted_genres = genre_df_sorted['Genre'].tolist()
+    
+    # Default selection is the top genre sorted by Total Final Score
+    genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=0)
+    
+    # Show overall ranking for the selected genre without any subgenre filter
+    df_genre = df_d3[genre_selected]
+    
+    # Exclude blank sub-genres for selection and show only unique sub-genres
+    sub_genres = df_genre['Sub Genre'].unique()
+    sub_genres = [sub_genre for sub_genre in sub_genres if sub_genre.strip() != '']  # Filter out blanks
+
+    if len(sub_genres) > 0:
+        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=sub_genres)
+        
+    # If sub-genres are selected, filter by them; otherwise, show the whole genre
+    if sub_genre_selected:
+        df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
+
 # Sidebar Footer
 st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
@@ -142,34 +166,7 @@ elif data_source == "By Category" and category_selected:
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
-
-
-
-# In[ ]:
-
-
-# Fix for By Genre Section
-elif data_source == "By Genre":
-    # Arrange genres by "Total Final Score"
-    genre_df_sorted = df_d1.groupby('Genre')['FinalScore'].sum().reset_index().sort_values(by='FinalScore', ascending=False)
-    sorted_genres = genre_df_sorted['Genre'].tolist()
-    
-    # Default selection is the top genre sorted by Total Final Score
-    genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=0)
-    
-    # Show overall ranking for the selected genre without any subgenre filter
-    df_genre = df_d3[genre_selected]
-    
-    # List subgenres directly without blanks for selection
-    sub_genres = df_genre['Sub Genre'].dropna().unique()  # Remove any blanks
-    sub_genres = [sub_genre for sub_genre in sub_genres if sub_genre.strip()]  # Exclude blank sub-genres
-    if len(sub_genres) > 0:
-        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
-        
-    # If sub-genres are selected, filter by them; otherwise, show the whole genre
-    if sub_genre_selected:
-        df_genre = df_genre[df_genre['Sub Genre'].isin(sub_genre_selected)]
-
+elif data_source == "By Genre" and genre_selected:
     total_sub_genres = len(df_genre['Sub Genre'].unique())
     
     # Display genre overview without subgenre filtering first
@@ -184,10 +181,6 @@ elif data_source == "By Genre":
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications for Genre: {genre_selected}</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
-
-
-# In[ ]:
-
 
 # Global Footer
 st.markdown(
