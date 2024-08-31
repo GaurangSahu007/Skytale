@@ -12,6 +12,24 @@ d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
 
+# Global Header
+st.markdown(
+    """
+    <style>
+    .header {
+        font-size:30px;
+        font-weight:bold;
+        text-align: center;
+        padding: 10px;
+        background-color: #f0f0f0;
+        margin-bottom: 20px;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown('<div class="header">Application Rank Viewer</div>', unsafe_allow_html=True)
+
 # Load the data
 @st.cache_data
 def load_data():
@@ -136,6 +154,23 @@ elif data_source == "By Genre" and genre_selected:
     if "All" not in sub_genre_selected:
         st.subheader(f"(Sub Genre: {selected_sub_genres})")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
+
+# Global Footer
+st.markdown(
+    """
+    <style>
+    .footer {
+        font-size:16px;
+        text-align: center;
+        padding: 10px;
+        margin-top: 30px;
+        background-color: #f0f0f0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
 
 # In[ ]:
