@@ -167,10 +167,14 @@ elif data_source == "By Category" and category_selected:
     st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
 elif data_source == "By Genre" and genre_selected:
-    total_sub_genres = len(df_genre['Sub Genre'].unique())
+    # Exclude blank sub-genres for display
+    unique_sub_genres = [sub_genre for sub_genre in df_genre['Sub Genre'].unique() if sub_genre.strip() != '']
+    total_sub_genres = len(unique_sub_genres)
     
     # Display genre overview without subgenre filtering first
+    sub_genres_display = ' | '.join(unique_sub_genres) if total_sub_genres > 0 else "No Subgenre"
     st.markdown(f"<h3 style='text-align: center;'>Number of Sub Genres: {total_sub_genres}</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h4 style='text-align: center;'>Sub Genres: {sub_genres_display}</h4>", unsafe_allow_html=True)
 
     # If subgenres are selected, show the specific subgenre ranking; otherwise, show the overall genre ranking
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
