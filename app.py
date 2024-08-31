@@ -149,7 +149,7 @@ st.markdown(f'<div class="header">{dynamic_header}</div>', unsafe_allow_html=Tru
 # Sidebar Footer
 st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
-# Function to extract top and bottom N applications
+# Function to extract top and bottom N applications and format them
 def extract_top_bottom(df, top_n, bottom_n):
     # Calculate ScoreDifference
     rank_1_score = df['FinalScore'].max()
@@ -196,15 +196,19 @@ def style_dataframe(df, color):
         'color': 'white'
     })
 
+# Function to display ranking for the selected data
+def display_ranking(top_apps, bottom_apps, data_title):
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {data_title} Applications</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {data_title} Applications</h3>", unsafe_allow_html=True)
+    st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
+
 # Display Data based on selected filter
 if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(round_decimals(top_apps))
     bottom_apps = ensure_compatible_types(round_decimals(bottom_apps))
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
+    display_ranking(top_apps, bottom_apps, "Overall Data")
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
@@ -212,10 +216,7 @@ elif data_source == "By Category" and category_selected:
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
     top_apps = ensure_compatible_types(round_decimals(top_apps))
     bottom_apps = ensure_compatible_types(round_decimals(bottom_apps))
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} {category_selected} Applications</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
+    display_ranking(top_apps, bottom_apps, f"{category_selected}")
 elif data_source == "By Genre" and genre_selected:
     # Exclude blank sub-genres for display
     unique_sub_genres = [sub_genre for sub_genre in df_genre['Sub Genre'].unique() if sub_genre.strip() != '']
@@ -233,11 +234,7 @@ elif data_source == "By Genre" and genre_selected:
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(round_decimals(top_apps))
     bottom_apps = ensure_compatible_types(round_decimals(bottom_apps))
-    
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications</h3>", unsafe_allow_html=True)
-    st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
+    display_ranking(top_apps, bottom_apps, genre_selected)
 
 # Global Footer
 st.markdown(
