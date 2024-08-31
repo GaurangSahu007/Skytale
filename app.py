@@ -11,23 +11,36 @@ import pandas as pd
 d1_path = 'Application_Ranking_Combined.xlsx'
 d2_path = 'Application_Ranking_by_Category.xlsx'
 d3_path = 'Application_Ranking_by_Genre.xlsx'
+bg_image_path = "background.png"  # Replace with your local image path
 
 # Global Header
 st.markdown(
-    """
+    f"""
     <style>
-    .header {
+    .header {{
         font-size:30px;
         font-weight:bold;
         text-align: center;
         padding: 10px;
-        background-color: #f0f0f0;
+        background-color: rgba(240, 240, 240, 0.7);
         margin-bottom: 20px;
-    }
+    }}
+    .main {{
+        background-image: url(data:image/png;base64,{st.image('Background.jpg')});
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        opacity: 0.7; /* Adjust the transparency */
+        padding: 20px;
+    }}
     </style>
     """,
     unsafe_allow_html=True
 )
+
+# Apply background CSS
+st.markdown('<div class="main">', unsafe_allow_html=True)
+
 st.markdown('<div class="header">CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS</div>', unsafe_allow_html=True)
 
 # Load the data
@@ -193,6 +206,9 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
+
+# Close background div
+st.markdown('</div
 
 
 # In[ ]:
