@@ -58,15 +58,6 @@ st.sidebar.markdown(
         padding: 10px;
         text-align: center;
     }
-    .sidebar-footer {
-        font-size:16px;
-        text-align: center;
-        padding: 10px;
-        margin-top: 20px;
-        background-color: #89C55F;  /* Footer color matches header */
-        color: white;
-        font-weight: bold;
-    }
     </style>
     """,
     unsafe_allow_html=True
@@ -93,16 +84,17 @@ sub_genre_selected = None
 if data_source == "By Category":
     category_selected = st.sidebar.selectbox("Select Category:", list(df_d2.keys()))
 elif data_source == "By Genre":
-    # Sort genres by "Genre Final Score"
-    genre_df_sorted = df_d1.groupby('Genre')['FinalScore'].mean().reset_index().sort_values(by='FinalScore', ascending=False)
+    # Sort genres by Total Final Score
+    genre_df_sorted = df_d1.groupby('Genre')['FinalScore'].sum().reset_index().sort_values(by='FinalScore', ascending=False)
     sorted_genres = genre_df_sorted['Genre'].tolist()
     
-    # Default selection is "Communication" and sorted by Genre Final Score
-    genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=sorted_genres.index('Communication'))
+    # Select Top Genre (by Total Final Score) by default
+    genre_selected = st.sidebar.selectbox("Select Genre:", sorted_genres, index=0)
     
     if genre_selected:
-        # List subgenres directly without blanks
+        # List subgenres without blanks
         sub_genres = df_d3[genre_selected]['Sub Genre'].dropna().unique()  # Remove any blanks
+        sub_genres = [sub_genre for sub_genre in sub_genres if sub_genre != '']  # Exclude blanks
         if len(sub_genres) > 0:
             sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
 
@@ -202,7 +194,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 st.markdown('<div class="footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
-
 
 
 # In[ ]:
