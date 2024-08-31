@@ -157,6 +157,11 @@ def extract_top_bottom(df, top_n, bottom_n):
     
     top_apps = df.nsmallest(top_n, 'FinalRank')
     bottom_apps = df.nlargest(bottom_n, 'FinalRank')
+    
+    # Round 'FinalRank' and 'Ratings' to 2 decimal places
+    top_apps[['FinalRank', 'Ratings']] = top_apps[['FinalRank', 'Ratings']].round(2)
+    bottom_apps[['FinalRank', 'Ratings']] = bottom_apps[['FinalRank', 'Ratings']].round(2)
+    
     return top_apps, bottom_apps
 
 # Columns to Display
