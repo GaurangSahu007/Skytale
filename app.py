@@ -28,7 +28,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-st.markdown('<div class="header">Application Rank Viewer</div>', unsafe_allow_html=True)
+st.markdown('<div class="header">CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS</div>', unsafe_allow_html=True)
 
 # Load the data
 @st.cache_data
@@ -46,10 +46,29 @@ def load_data():
 
 df_d1, df_d2, df_d3 = load_data()
 
-# Sidebar Controls
+# Sidebar Controls with Center-aligned Heading and Footer
+st.sidebar.markdown(
+    """
+    <style>
+    .sidebar .sidebar-content {
+        padding: 10px;
+        text-align: center;
+    }
+    .sidebar-footer {
+        font-size:16px;
+        text-align: center;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #f0f0f0;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 st.sidebar.image("SCMHRD.png", use_column_width=True)  # Adjust the image path
 
-st.sidebar.title("Filter")
+st.sidebar.markdown('<h2 style="text-align: center;">Filter</h2>', unsafe_allow_html=True)
 
 # Global Search Option
 search_query = st.sidebar.text_input("Search Application by Name:")
@@ -73,6 +92,9 @@ elif data_source == "By Genre":
         sub_genres = df_d3[genre_selected]['Sub Genre'].unique()
         sub_genres = [sg for sg in sub_genres if sg]  # Remove empty strings
         sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=["All"] + list(sub_genres), default="All")
+
+# Sidebar Footer
+st.sidebar.markdown('<div class="sidebar-footer">Created by Team Great Knight Eagle</div>', unsafe_allow_html=True)
 
 # Main Display
 st.title("Application Ranking Viewer")
