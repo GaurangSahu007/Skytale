@@ -192,9 +192,9 @@ if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Top {n_value} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(top_apps[columns_to_display].reset_index(drop=True), '#89C55F'))  # Dark Green for Top N
-    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications from Overall Data</h3>", unsafe_allow_html=True)
+    st.markdown(f"<h3 style='text-align: center;' class='underline'>Bottom {n_value} Applications</h3>", unsafe_allow_html=True)
     st.dataframe(style_dataframe(bottom_apps[columns_to_display].reset_index(drop=True), '#8B0000'))  # Dark Red for Bottom N
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
