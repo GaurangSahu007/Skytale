@@ -22,16 +22,15 @@ def load_data():
     # Ensure 'Sub Genre' NaN values are treated as blank
     for genre in df_d3:
         if 'Sub Genre' in df_d3[genre].columns:
-            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('')
+            df_d3[genre]['Sub Genre'] = df_d3[genre]['Sub Genre'].fillna('No sub genre')
     
     return df_d1, df_d2, df_d3
 
 df_d1, df_d2, df_d3 = load_data()
 
 # Sidebar Controls
-st.sidebar.image("SCMHRD.png", use_column_width=True)  # Adjust the image path
-
-st.sidebar.markdown("<h1 style='text-align: center;'>Filter</h1>", unsafe_allow_html=True)
+st.sidebar.title("Filter")
+st.sidebar.markdown('<div style="text-align: center;">Filter</div>', unsafe_allow_html=True)
 
 # Global Search Option
 search_query = st.sidebar.text_input("Search Application by Name:")
@@ -54,10 +53,13 @@ elif data_source == "By Genre":
     if genre_selected:
         sub_genres = df_d3[genre_selected]['Sub Genre'].unique()
         sub_genres = [sg for sg in sub_genres if sg]  # Remove empty strings
-        sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))  # Removed "All" option
+        if sub_genres.size == 0:  # No sub genres available
+            st.sidebar.write("No sub genre")
+        else:
+            sub_genre_selected = st.sidebar.multiselect("Select Sub Genre(s):", options=list(sub_genres))
 
 # Main Display
-st.title("Application Ranking Viewer")
+st.title("CASE SOLUTION: THE ADVENT OF SMARTPHONE APPLICATIONS")
 
 # Function to extract top and bottom N applications
 def extract_top_bottom(df, top_n, bottom_n):
@@ -95,13 +97,15 @@ if data_source == "Overall Data":
     top_apps, bottom_apps = extract_top_bottom(df_d1, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    top_app_name = top_apps.iloc[0]['Application'] if not top_apps.empty else "N/A"
-    bottom_app_name = bottom_apps.iloc[-1]['Application'] if not bottom_apps.empty else "N/A"
-    st.subheader(f"Total Applications: {df_d1.shape[0]}")
-    st.subheader(f"Top {n_value} Applications from Overall Data - Top Application: {top_app_name}")
+    
+    st.markdown("## Top 10 Applications from Overall Data")
+    st.markdown(f"### Top Application: {top_apps.iloc[0]['Application']}")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} Applications from Overall Data - Lowest Rank Application: {bottom_app_name}")
+    
+    st.markdown("## Bottom 10 Applications from Overall Data")
+    st.markdown(f"### Lowest Rank Application: {bottom_apps.iloc[-1]['Application']}")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
+
 elif data_source == "By Category" and category_selected:
     df_category = df_d2[category_selected]
     if category_selected.lower() == "paid":
@@ -109,13 +113,15 @@ elif data_source == "By Category" and category_selected:
     top_apps, bottom_apps = extract_top_bottom(df_category, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
-    top_app_name = top_apps.iloc[0]['Application'] if not top_apps.empty else "N/A"
-    bottom_app_name = bottom_apps.iloc[-1]['Application'] if not bottom_apps.empty else "N/A"
-    st.subheader(f"Total Applications: {df_category.shape[0]}")
-    st.subheader(f"Top {n_value} {category_selected} Applications - Top Application: {top_app_name}")
+    
+    st.markdown(f"## Top 10 {category_selected} Applications")
+    st.markdown(f"### Top Application: {top_apps.iloc[0]['Application']}")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} {category_selected} Applications - Lowest Rank Application: {bottom_app_name}")
+    
+    st.markdown(f"## Bottom 10 {category_selected} Applications")
+    st.markdown(f"### Lowest Rank Application: {bottom_apps.iloc[-1]['Application']}")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
+
 elif data_source == "By Genre" and genre_selected:
     df_genre = df_d3[genre_selected]
     
@@ -125,26 +131,26 @@ elif data_source == "By Genre" and genre_selected:
         selected_sub_genres = ', '.join(sub_genre_selected)
         st.subheader(f"Total Applications in Selected Sub Genre(s): {total_applications}")
     else:
-        selected_sub_genres = "All Sub Genres"
+        selected_sub_genres = "No sub genre"
         total_applications = df_genre.shape[0]
-
+        st.subheader(f"Total Applications: {total_applications}")
+    
     top_apps, bottom_apps = extract_top_bottom(df_genre, n_value, n_value)
     top_apps = ensure_compatible_types(top_apps)
     bottom_apps = ensure_compatible_types(bottom_apps)
     
-    sub_genre_count = df_genre['Sub Genre'].nunique()
-    sub_genre_display = f"{sub_genre_count} Sub Genre(s)" if sub_genre_count > 0 else "No Sub Genre"
-    
-    st.subheader(f"Top {n_value} Applications for Genre: {genre_selected} ({sub_genre_display})")
+    st.markdown(f"## Top 10 Applications for Genre: {genre_selected}")
     if sub_genre_selected:
-        st.subheader(f"(Sub Genre: {selected_sub_genres})")
-    top_app_name = top_apps.iloc[0]['Application'] if not top_apps.empty else "N/A"
-    bottom_app_name = bottom_apps.iloc[-1]['Application'] if not bottom_apps.empty else "N/A"
+        st.markdown(f"(Sub Genre: {selected_sub_genres})")
+    st.markdown(f"### Top Application: {top_apps.iloc[0]['Application']}")
     st.dataframe(top_apps[columns_to_display].reset_index(drop=True))
-    st.subheader(f"Bottom {n_value} Applications for Genre: {genre_selected}")
+    
+    st.markdown(f"## Bottom 10 Applications for Genre: {genre_selected}")
     if sub_genre_selected:
-        st.subheader(f"(Sub Genre: {selected_sub_genres})")
+        st.markdown(f"(Sub Genre: {selected_sub_genres})")
+    st.markdown(f"### Lowest Rank Application: {bottom_apps.iloc[-1]['Application']}")
     st.dataframe(bottom_apps[columns_to_display].reset_index(drop=True))
+
 
 
 # In[ ]:
